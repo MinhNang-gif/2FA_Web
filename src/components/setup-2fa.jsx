@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
@@ -7,11 +7,24 @@ import SecurityIcon from '@mui/icons-material/Security'
 import CancelIcon from '@mui/icons-material/Cancel'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import { get2FA_QRCodeAPI } from '~/apis'
 
 // Tài liệu về Material Modal rất dễ ở đây: https://mui.com/material-ui/react-modal/
-function Setup2FA({ isOpen, toggleOpen }) {
+function Setup2FA({ isOpen, toggleOpen, user }) {
   const [otpToken, setConfirmOtpToken] = useState('')
   const [error, setError] = useState(null)
+  // Bien state de luu tru qr code image nhan ve tu BE
+  const [qrCodeImageUrl, setQrCodeImageUrl] = useState(null)
+
+  // Dung useEffect de call API get 2fa_qr_code
+  useEffect(() => {
+    if (isOpen) {
+      get2FA_QRCodeAPI(user._id)
+        .then(res => {
+          setQrCodeImageUrl(res.qrcode)
+        })
+    }
+  }, [isOpen, user._id])
 
   const handleCloseModal = () => {
     toggleOpen(!isOpen)
@@ -25,7 +38,7 @@ function Setup2FA({ isOpen, toggleOpen }) {
       return
     }
     console.log('handleConfirmSetup2FA > otpToken: ', otpToken)
-    // Call API here
+    // Call API
   }
 
   return (
@@ -61,11 +74,14 @@ function Setup2FA({ isOpen, toggleOpen }) {
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, p: 1 }}>
-          <img
-            style={{ width: '100%', maxWidth: '250px', objectFit: 'contain' }}
-            src="src/assets/trungquandev-qr-code.png"
-            alt="card-cover"
-          />
+          {!qrCodeImageUrl
+            ? <Typography>Loading...</Typography>
+            : <img
+              style={{ width: '100%', maxWidth: '250px', objectFit: 'contain' }}
+              src={qrCodeImageUrl}
+              alt="2fa_qr_code"
+            />
+          }
 
           <Box sx={{ textAlign: 'center' }}>
             Quét mã QR trên ứng dụng <strong>Google Authenticator</strong> hoặc <strong>Authy</strong> của bạn.<br />Sau đó nhập mã gồm 6 chữ số và click vào <strong>Confirm</strong> để xác nhận.
