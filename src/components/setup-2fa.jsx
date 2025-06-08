@@ -8,9 +8,10 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { get2FA_QRCodeAPI } from '~/apis'
+import { setup2FAAPI } from '~/apis'
 
 // Tài liệu về Material Modal rất dễ ở đây: https://mui.com/material-ui/react-modal/
-function Setup2FA({ isOpen, toggleOpen, user }) {
+function Setup2FA({ isOpen, toggleOpen, user, handleSuccessSetUp2FA }) {
   const [otpToken, setConfirmOtpToken] = useState('')
   const [error, setError] = useState(null)
   // Bien state de luu tru qr code image nhan ve tu BE
@@ -37,8 +38,15 @@ function Setup2FA({ isOpen, toggleOpen, user }) {
       toast.error(errMsg)
       return
     }
-    console.log('handleConfirmSetup2FA > otpToken: ', otpToken)
-    // Call API
+    // Call API setup_2FA
+    setup2FAAPI(user._id, otpToken)
+      .then(updatedUser => {
+        // Goi len component cha (Dashboard) de xu ly
+        handleSuccessSetUp2FA(updatedUser)
+
+        toast.success('Setup 2FA successfully!')
+        setError(null)
+      })
   }
 
   return (
@@ -114,8 +122,8 @@ function Setup2FA({ isOpen, toggleOpen, user }) {
 
           <Box>
             <Typography variant="span" sx={{ fontWeight: 'bold', fontSize: '0.9em', color: '#8395a7', '&:hover': { color: '#fdba26' } }}>
-              <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://youtube.com/@trungquandev' target='_blank' rel='noreferrer'>
-                TrungQuanDev - Một Lập Trình Viên
+              <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://github.com/MinhNang-gif' target='_blank' rel='noreferrer'>
+                Minh Năng
               </a>
             </Typography>
           </Box>

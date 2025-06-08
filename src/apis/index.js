@@ -29,3 +29,13 @@ export const get2FA_QRCodeAPI = async (userId) => {
   const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/users/${userId}/get_2fa_qr_code`)
   return response.data
 }
+
+export const setup2FAAPI = async (userId, otpToken) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/${userId}/setup_2fa`, { otpToken }) // can truyen otpToken duoi dang JSON Object de ben BE nhan duoc duoi mot cai key la otpToken thong qua req.body.otpToken de xu ly
+  return response.data
+}
+
+export const verify2FAAPI = async (userId, otpToken) => {
+  const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/users/${userId}/verify_2fa`, { otpToken })
+  return response.data
+}

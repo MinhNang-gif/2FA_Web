@@ -34,6 +34,22 @@ function Dashboard() {
     navigate('/login')
   }
 
+  const handleSuccessSetUp2FA = (updatedUser) => {
+    // Update lai thong tin user trong state component
+    setUser(updatedUser)
+    // Update lai thong tin user trong LocalStorage
+    localStorage.setItem('userInfo', JSON.stringify(updatedUser))
+    // Dong modal setup_2FA
+    setOpenSetup2FA(false)
+  }
+
+  const handleSuccessVerify2FA = (updatedUser) => {
+    // Update lai thong tin user trong state component
+    setUser(updatedUser)
+    // Update lai thong tin user trong LocalStorage
+    localStorage.setItem('userInfo', JSON.stringify(updatedUser))
+  }
+
   if (!user) {
     return (
       <Box sx={{
@@ -65,19 +81,23 @@ function Dashboard() {
         isOpen={openSetup2FA}
         toggleOpen={setOpenSetup2FA}
         user={user}
+        handleSuccessSetUp2FA={handleSuccessSetUp2FA}
       />
 
       {/* Modal yêu cầu xác thực 2FA */}
       {/* Với điều kiện user đã bật tính năng 2FA, và user chưa xác thực 2FA ngay sau khi đăng nhập ở lần tiếp theo */}
-      {/* <Require2FA /> */}
-      {/* {user.require_2fa && !user.is_2fa_verified && <Require2FA />} */}
+      {user.require_2fa && !user.is_2fa_verified &&
+      <Require2FA
+        user={user}
+        handleSuccessVerify2FA={handleSuccessVerify2FA}
+      />}
 
       <Box>
-        <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://youtube.com/@trungquandev' target='_blank' rel='noreferrer'>
+        <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://github.com/MinhNang-gif' target='_blank' rel='noreferrer'>
           <img
-            style={{ width: '100%', height: '180px', borderRadius: '6px', objectFit: 'cover' }}
-            src="src/assets/trungquandev-mot-lap-trinh-vien-Youtube-Cover-3556x2000.png"
-            alt="cover-trungquandev-mot-lap-trinh-vien"
+            style={{ width: '100%', height: '400px', borderRadius: '6px', objectFit: 'cover' }}
+            src="src/assets/minhnang.jpg"
+            alt="cover-minhnang"
           />
         </a>
       </Box>
@@ -128,8 +148,8 @@ function Dashboard() {
       <Box sx={{ textAlign: 'right' }}>
         Author:&nbsp;
         <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>
-          <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://youtube.com/@trungquandev' target='_blank' rel='noreferrer'>
-            TrungQuanDev - Một Lập Trình Viên
+          <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://github.com/MinhNang-gif' target='_blank' rel='noreferrer'>
+            Minh Năng
           </a>
         </Typography>
       </Box>

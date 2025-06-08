@@ -6,9 +6,10 @@ import Typography from '@mui/material/Typography'
 import SecurityIcon from '@mui/icons-material/Security'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import { verify2FAAPI } from '~/apis'
 
 // Tài liệu về Material Modal rất dễ ở đây: https://mui.com/material-ui/react-modal/
-function Require2FA() {
+function Require2FA({ user, handleSuccessVerify2FA }) {
   const [otpToken, setConfirmOtpToken] = useState('')
   const [error, setError] = useState(null)
 
@@ -19,8 +20,16 @@ function Require2FA() {
       toast.error(errMsg)
       return
     }
-    console.log('handleRequire2FA > otpToken: ', otpToken)
-    // Call API here
+
+    // Call API require_2fa
+    verify2FAAPI(user._id, otpToken)
+      .then(updatedUser => {
+        // Goi len component cha (Dashboard) de xu ly
+        handleSuccessVerify2FA(updatedUser)
+
+        toast.success('Require 2FA Successfully!')
+        setError(null)
+      })
   }
 
   return (
@@ -78,8 +87,8 @@ function Require2FA() {
 
           <Box>
             <Typography variant="span" sx={{ fontWeight: 'bold', fontSize: '0.9em', color: '#8395a7', '&:hover': { color: '#fdba26' } }}>
-              <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://youtube.com/@trungquandev' target='_blank' rel='noreferrer'>
-                TrungQuanDev - Một Lập Trình Viên
+              <a style={{ color: 'inherit', textDecoration: 'none' }} href='https://github.com/MinhNang-gif' target='_blank' rel='noreferrer'>
+                Minh Năng
               </a>
             </Typography>
           </Box>
